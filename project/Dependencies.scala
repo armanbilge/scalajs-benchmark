@@ -8,6 +8,7 @@ object Dependencies {
 
   object Ver {
     val cats         = "2.6.1"
+    val catsEffect   = "3.2.2"
     val chartJs      = "1.0.2"
     val circe        = "0.14.1"
     val fileSaver    = "2.0.5"
@@ -34,6 +35,7 @@ object Dependencies {
 
     val cats                = Def.setting("org.typelevel"                     %%% "cats-core"               % Ver.cats)
     val catsFree            = Def.setting("org.typelevel"                     %%% "cats-free"               % Ver.cats)
+    val catsEffect          = Def.setting("org.typelevel"                     %%% "cats-effect"             % Ver.catsEffect)
     val circe               = Def.setting("io.circe"                          %%% "circe-core"              % Ver.circe)
     val circeGeneric        = Def.setting("io.circe"                          %%% "circe-generic"           % Ver.circe)
     val circeParser         = Def.setting("io.circe"                          %%% "circe-parser"            % Ver.circe)

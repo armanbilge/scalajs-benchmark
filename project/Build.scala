@@ -106,6 +106,7 @@ object ScalaJsBenchmark {
       .settings(
         libraryDependencies ++= Seq(
           Dep.cats               .value,
+          Dep.catsEffect         .value,
           Dep.circe              .value,
           Dep.circeGeneric       .value,
           Dep.circeParser        .value % Test,

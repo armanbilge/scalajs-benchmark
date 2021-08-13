@@ -1,5 +1,9 @@
 package japgolly.scalajs.benchmark
 
+import cats.data.ReaderT
+import cats.effect.IO
+import cats.effect.kernel.Resource
+import cats.{Id, ~>}
 import japgolly.scalajs.benchmark.Benchmark.SetupFn
 
 /**
@@ -33,41 +37,38 @@ object Benchmark {
     *
     * The timer starts immediately before running this and stop immediately on completion.
     */
-  type Fn = () => Any
+  type Fn = IO[Unit]
 
-  type SetupFn[-P] = Setup[P, Fn]
+  type ResourceIO[+A] = Resource[IO, A]
+  type SetupFn[-P] = ReaderT[ResourceIO, P, IO[Unit]]
   // TODO later: type SetupFn[-I] = Setup[I, Setup[Unit, Fn]]
 
   /**
     * Creates a benchmark that doesn't need any external data.
     */
-  def apply(name: String)(f: => Any): Benchmark[Unit] =
-    new Benchmark(name, Setup.pure(() => f), false)
-
-  /**
-    * Creates a benchmark that accepts a parameter (without needing transformation or preprocessing).
-    */
-  def apply[A](name: String, f: A => Any): Benchmark[A] =
-    new Benchmark(name, Setup.simple(a => () => f(a)), false)
+  def apply(name: String)(f: IO[Unit]): Benchmark[Unit] =
+    new Benchmark(name, ReaderT.liftF(Resource.pure(f)), false)
 
   def fromFn[A](name: String)(f: A => Fn): Benchmark[A] =
-    new Benchmark(name, Setup.simple(f), false)
+    new Benchmark(name, ReaderT[Id, A, IO[Unit]](f).mapK(new (Id ~> ResourceIO) {
+      def apply[A](fa: Id[A]): ResourceIO[A] = Resource.pure(fa)
+    }), false)
 
-  def derive[A, B](name: String, f: A => Benchmark[B])(b: A => B): Benchmark[A] =
-    new Benchmark(name, Setup.derive(f(_: A).setup)(b), false)
+  // def derive[A, B](name: String, f: A => Benchmark[B])(b: A => B): Benchmark[A] =
+  //   new Benchmark(name, Setup.derive(f(_: A).setup)(b), false)
 
-  def setup[A, B](p: A => B): Builder[A, B] =
-    Setup.simple(p).toBM
+  // def setup[A, B](p: A => B): Builder[A, B] =
+  //   Setup.simple(p).toBM
 
-  final class Builder[A, B](private val setup: Setup[A, B]) extends AnyVal {
+  // final class Builder[A, B](private val setup: Setup[A, B]) extends AnyVal {
 
-    def apply(name: String)(f: B => Any): Benchmark[A] = {
-      val setupFn: SetupFn[A] = setup.map(b => () => f(b))
-      new Benchmark(name, setupFn, isDisabledByDefault = false)
-    }
+  //   def apply(name: String)(f: B => Any): Benchmark[A] = {
+  //     val setupFn: SetupFn[A] = setup.map(b => () => f(b))
+  //     new Benchmark(name, setupFn, isDisabledByDefault = false)
+  //   }
 
-    def map[C](f: B => C): Builder[A, C] =
-      new Builder(setup.map(f))
-  }
+  //   def map[C](f: B => C): Builder[A, C] =
+  //     new Builder(setup.map(f))
+  // }
 
 }
