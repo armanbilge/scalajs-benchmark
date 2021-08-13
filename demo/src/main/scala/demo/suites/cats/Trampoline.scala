@@ -4,7 +4,7 @@ import cats._
 import cats.free.Trampoline
 import cats.implicits._
 import japgolly.scalajs.benchmark._
-import japgolly.scalajs.benchmark.gui._
+import cats.effect.IO
 
 object TrampolineBM {
 
@@ -23,10 +23,7 @@ object TrampolineBM {
     } yield x + y
 
   val suite = Suite[Int]("Trampoline")(
-    Benchmark("eval",       evalFib(_).value),
-    Benchmark("trampoline", trampolineFib(_).run))
+    Benchmark.fromFn[Int]("eval")(p => IO(evalFib(p).value)),
+    Benchmark.fromFn[Int]("eval")(p => IO(trampolineFib(p).run)))
 
-  val param = GuiParam.int("Size", 15, 30)
-
-  val guiSuite = GuiSuite(suite, param)
 }

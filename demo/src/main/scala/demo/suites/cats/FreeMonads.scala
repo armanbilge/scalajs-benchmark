@@ -1,13 +1,11 @@
 package demo.suites.cats
 
 import cats.data.{Kleisli, ReaderT}
+import cats.effect.IO
 import cats.free.Free
 import cats.instances.function._
 import cats.~>
-import demo.Util._
 import japgolly.scalajs.benchmark._
-import japgolly.scalajs.benchmark.gui._
-import japgolly.scalajs.react.vdom.html_<^._
 
 object FreeMonads {
 
@@ -57,14 +55,18 @@ object FreeMonads {
 
   val bmFn0FoldMap =
     bm(prefix + "Fn0 (foldMap)"){ p1 =>
-      val p2: Function0[Int] = p1.foldMap(makeRealFn0)
-      p2(): Int
+      IO {
+        val p2: Function0[Int] = p1.foldMap(makeRealFn0)
+        p2(): Int
+      }
     }
 
   val bmFn0Compile =
     bm(prefix + "Fn0 (compile)"){ p1 =>
-      val p2: Free[Function0, Int] = p1.compile(makeRealFn0)
-      p2.run: Int
+      IO {
+        val p2: Free[Function0, Int] = p1.compile(makeRealFn0)
+        p2.run: Int
+      }
     }
 
   val bms = Vector[Benchmark[Int]](
@@ -72,8 +74,10 @@ object FreeMonads {
     bmFn0Compile,
 
     bm(prefix + "Reader[Fn0]"){ p1 =>
-      val p2: ReaderF[Int] = p1.foldMap(CmdToReaderF)
-      p2.run(new TheRealDeal)(): Int
+      IO {
+        val p2: ReaderF[Int] = p1.foldMap(CmdToReaderF)
+        p2.run(new TheRealDeal)(): Int
+      }
     }
   )
 
@@ -81,14 +85,4 @@ object FreeMonads {
 
   val suite = Suite("Free monads")(bms: _*)
 
-  val param = GuiParam.int("Size", 50, 500)
-
-  val guiSuite = GuiSuite(suite, param).describe(
-    <.div(
-      <.div(
-        "There are some experiments with ", <.code("Free"), " that I wrote in late 2014 with Scalaz, ported here to Cats."),
-      <.div(^.marginTop := "1ex",
-        "There are newer constructs available (like \"freer\" monads now?) that would benefit from being included and likely will be in the near future."),
-      linkToSource(sourceFilename))
-  )
 }

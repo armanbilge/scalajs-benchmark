@@ -1,16 +1,12 @@
 package demo.suites.scalajs
 
+import cats.effect.IO
 import japgolly.scalajs.benchmark._
-import japgolly.scalajs.benchmark.gui._
-import monocle.Iso
 
 object Allocation {
 
   final case class Config(classes2: Int)
 
-  val iso    = Iso[Config, Int](_.classes2)(Config.apply)
-  val param1 = GuiParam.int("Arity-2 case classes to allocate", 1000000)
-  val params = GuiParams.combine1(iso)(param1)
 
   // ===================================================================================================================
 
@@ -33,9 +29,8 @@ object Allocation {
 
   val suite = Suite("Allocations")(
 
-    bm("Classes")(prep => prep())
+    bm("Classes")(prep => IO(prep()).void)
 
   )
 
-  val guiSuite = GuiSuite(suite, params)
 }

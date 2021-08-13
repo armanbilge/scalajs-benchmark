@@ -1,12 +1,9 @@
 package demo.suites.shootouts
 
 import cats.Functor
+import cats.effect.IO
 import demo.Libraries
-import demo.Util._
 import japgolly.scalajs.benchmark._
-import japgolly.scalajs.benchmark.gui._
-import japgolly.scalajs.react.vdom.html_<^._
-import monocle.macros.GenIso
 import scala.util.Random
 import scalaz.std.anyVal._
 import scalaz.{IMap, Maybe}
@@ -332,7 +329,7 @@ object LensShooutout {
   }
 
   def bm(name: String, lb: LensBench): Benchmark[Params] =
-    setup.map(_(lb))(name)(f => f(input))
+    setup.map(_(lb))(name)(f => IO(f(input)).void)
 
   val suite = Suite[Params]("Lens libraries")(
     bm("No lenses; plain Scala"             , StdLensBench),
@@ -341,16 +338,4 @@ object LensShooutout {
     bm(Libraries.Scalaz.fullName            , ScalazLensBench),
     bm(Libraries.Shapeless.fullName         , ShapelessLensBench))
 
-  val param1 = GuiParam.enumOf[Op]("Op", Get, Set, Modify)(_.toString, initialValues = Seq(Modify))
-  val param2 = GuiParam.enumOf[Size]("Size", Size0, Size3, Size6)(_.size.toString, initialValues = Seq(Size6))
-
-  val iso = GenIso.fields[Params]
-  val params = GuiParams.combine2(iso)(param1, param2)
-
-  val guiSuite = GuiSuite(suite, params).describe(
-    <.div(<.div(^.marginBottom := "0.8em",
-      "Comparison of different Lens libraries.",
-      <.br,
-      "Benchmark taken from ", <.a(^.href := "https://github.com/julien-truffaut/Monocle/tree/master/bench/src/main/scala/monocle/bench", "Monocle"), "."),
-      linkToSource(sourceFilename)))
 }

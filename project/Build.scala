@@ -177,6 +177,7 @@ object ScalaJsBenchmark {
         ).filter(_ => scalaVersion.value.startsWith("2")),
         Compile / sourceGenerators += Demo.librariesFileTask.taskValue,
         Compile / unmanagedSourceDirectories ++= addDirsFor213_+(Compile).value,
+        scalaJSUseMainModuleInitializer := true,
         scalaJSLinkerConfig ~= { _.withSourceMap(true) },
         packageJSDependencies / skip := false,
       )

@@ -1,10 +1,7 @@
 package demo.suites.scala
 
-import demo.TempExt._
-import demo.Util._
+import cats.effect.IO
 import japgolly.scalajs.benchmark._
-import japgolly.scalajs.benchmark.gui._
-import japgolly.scalajs.react.vdom.html_<^._
 import scala.collection.immutable._
 
 object Flatmap {
@@ -17,7 +14,7 @@ object Flatmap {
   val a: A = 123
 
   private def makeBmFn(as: => IterableOnce[A]): Benchmark.Fn =
-    () => as.iterator.foreach(_ => ())
+    IO(() => as.iterator.foreach(_ => ()))
 
   private def makeTravBm[C[x] <: Iterable[x]](name: String, fill: (Int, A) => C[A]): Benchmark[Params] =
     Benchmark.fromFn[Params](name) { p =>
@@ -46,15 +43,4 @@ object Flatmap {
     Suite("FlatMap")(bms: _*)
   }
 
-  val iso = GenIso.fields[Params]
-
-  val param1 = GuiParam.int("Input Size", 100)
-  val param2 = GuiParam.int("Flatmap Size", 50)
-  val params = GuiParams.combine2(iso)(param1, param2)
-
-  val guiSuite = GuiSuite(suite, params).describe(
-    <.div(<.div(^.marginBottom := "0.8em",
-      "Inspects performance of a ", <.code("for (x <- values flatMap makeMoreValues) …"),
-      "-like pattern with different collection types."),
-      linkToSource(sourceFilename)))
 }

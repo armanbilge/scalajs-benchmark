@@ -4,6 +4,7 @@ import cats.data.ReaderT
 import cats.effect.IO
 import cats.effect.kernel.Resource
 import cats.{Id, ~>}
+import cats.data.Reader
 import japgolly.scalajs.benchmark.Benchmark.SetupFn
 
 /**
@@ -57,18 +58,20 @@ object Benchmark {
   // def derive[A, B](name: String, f: A => Benchmark[B])(b: A => B): Benchmark[A] =
   //   new Benchmark(name, Setup.derive(f(_: A).setup)(b), false)
 
-  // def setup[A, B](p: A => B): Builder[A, B] =
-  //   Setup.simple(p).toBM
+  def setup[A, B](p: A => B): Builder[A, B] =
+    new Builder(Reader(p))
 
-  // final class Builder[A, B](private val setup: Setup[A, B]) extends AnyVal {
+  final class Builder[A, B](private val setup: Reader[A, B]) extends AnyVal {
 
-  //   def apply(name: String)(f: B => Any): Benchmark[A] = {
-  //     val setupFn: SetupFn[A] = setup.map(b => () => f(b))
-  //     new Benchmark(name, setupFn, isDisabledByDefault = false)
-  //   }
+    def apply(name: String)(f: B => IO[Unit]): Benchmark[A] = {
+      val setupFn: SetupFn[A] = setup.map(f).mapK(new (Id ~> ResourceIO) {
+        def apply[A](fa: Id[A]): ResourceIO[A] = Resource.pure[IO, A](fa)
+      })
+      new Benchmark(name, setupFn, isDisabledByDefault = false)
+    }
 
-  //   def map[C](f: B => C): Builder[A, C] =
-  //     new Builder(setup.map(f))
-  // }
+    def map[C](f: B => C): Builder[A, C] =
+      new Builder(setup.map(f))
+  }
 
 }
