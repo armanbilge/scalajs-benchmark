@@ -8,7 +8,7 @@ import japgolly.scalajs.benchmark.engine.EngineOptions
 import japgolly.scalajs.benchmark.engine._
 import japgolly.scalajs.benchmark.gui.BmResultFormat
 
-abstract class BenchmarkIOApp[P] extends IOApp {
+abstract class BenchmarkIOApp extends IOApp {
 
   final def run(args: List[String]): IO[ExitCode] = plans.toList
     .map { plan =>
