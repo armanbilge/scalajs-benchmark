@@ -7,6 +7,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 import org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import xerial.sbt.Sonatype.autoImport._
 import Dependencies._
 import Lib._
 
@@ -66,6 +67,7 @@ object ScalaJsBenchmark {
       organization                  := "com.armanbilge",
       homepage                      := Some(url("https://github.com/armanbilge/" + ghProject)),
       licenses                      += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
+      sonatypeCredentialHost := "s01.oss.sonatype.org",
       scalaVersion                  := Ver.scala2,
       crossScalaVersions            := Seq(Ver.scala2, Ver.scala3),
       scalacOptions                ++= scalacCommonFlags,
