@@ -7,7 +7,6 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 import org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import sbtrelease.ReleasePlugin.autoImport._
 import Dependencies._
 import Lib._
 
@@ -64,8 +63,8 @@ object ScalaJsBenchmark {
 
   val commonSettings: PE =
     _.settings(
-      organization                  := "com.github.japgolly.scalajs-benchmark",
-      homepage                      := Some(url("https://github.com/japgolly/" + ghProject)),
+      organization                  := "com.armanbilge",
+      homepage                      := Some(url("https://github.com/armanbilge/" + ghProject)),
       licenses                      += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion                  := Ver.scala2,
       crossScalaVersions            := Seq(Ver.scala2, Ver.scala3),
@@ -78,9 +77,6 @@ object ScalaJsBenchmark {
                                        }.value,
       incOptions                    := incOptions.value.withLogRecompileOnMacro(false),
       updateOptions                 := updateOptions.value.withCachedResolution(true),
-      releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-      releaseTagComment             := s"v${(ThisBuild / version).value}",
-      releaseVcsSign                := true,
     )
 
   def utestSettings: PE =
