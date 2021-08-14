@@ -10,8 +10,8 @@ import japgolly.scalajs.benchmark.gui.BmResultFormat
 
 abstract class BenchmarkIOApp[P] extends IOApp {
 
-  final def run(args: List[String]): IO[ExitCode] = plans
-    .traverse_ { plan =>
+  final def run(args: List[String]): IO[ExitCode] = plans.toList
+    .map { plan =>
       val fmt = {
         val prog = plan.totalBenchmarks.toString.length
         val name = plan.bms.foldLeft(0)(_ max _.name.length)
@@ -38,6 +38,7 @@ abstract class BenchmarkIOApp[P] extends IOApp {
           case SuiteFinished(p) => IO.println("Suite completed: " + p.plan.name)
         }
     }
+    .sequence_
     .attempt
     .map {
       case Right(_) => ExitCode.Success
