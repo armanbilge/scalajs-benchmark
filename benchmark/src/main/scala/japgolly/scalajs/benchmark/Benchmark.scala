@@ -48,7 +48,7 @@ object Benchmark {
     * Creates a benchmark that doesn't need any external data.
     */
   def apply(name: String)(f: IO[Unit]): Benchmark[Unit] =
-    new Benchmark(name, ReaderT.liftF(Resource.pure(f)), false)
+    new Benchmark(name, ReaderT.liftF[ResourceIO, Unit, IO[Unit]](Resource.pure(f)), false)
 
   def fromFn[A](name: String)(f: A => Fn): Benchmark[A] =
     new Benchmark(name, ReaderT[Id, A, IO[Unit]](f).mapK(new (Id ~> ResourceIO) {

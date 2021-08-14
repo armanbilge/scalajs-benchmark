@@ -1,12 +1,7 @@
 package japgolly.scalajs.benchmark.gui
 
 import japgolly.scalajs.benchmark.engine.TimeUtil
-import japgolly.scalajs.benchmark.vendor.FileSaver
-import japgolly.scalajs.react.Callback
-import monocle.{Lens, Optional}
-import org.scalajs.dom.raw.{Blob, BlobPropertyBag}
 import scala.concurrent.duration.{Duration, FiniteDuration}
-import scala.reflect.ClassTag
 import scala.scalajs.js
 import scala.scalajs.js.|
 
@@ -100,26 +95,6 @@ object GuiUtil {
 
   def removeTrailingZeros(str: String): String =
     str.replaceFirst("0+$", "").replaceFirst("\\.$", "")
-
-  def vectorIndex[A](idx: Int): Lens[Vector[A], A] =
-    Lens[Vector[A], A](_(idx))(a => _.patch(idx, a :: Nil, 1))
-
-  def unsafeNarrowLens[A, B <: A: ClassTag]: Lens[A, B] =
-    Lens[A, B]({
-      case b: B => b
-      case a => throw new RuntimeException("Invalid subtype: " + a)
-    })(b => _ => b)
-
-  def optionalToLens[S, A](o: Optional[S, A])(default: => A): Lens[S, A] =
-    Lens[S, A](o.getOption(_).getOrElse(default))(o.replace)
-
-  def saveFile(text: String, filename: String, mimeType: String): Callback =
-    Callback {
-      val body = js.Array[js.Any](text)
-      val mime = BlobPropertyBag(mimeType + ";charset=utf-8")
-      val blob = new Blob(body, mime)
-      FileSaver.saveAs(blob, filename)
-    }
 
   def showFiniteDuration(d: Duration): String =
     d.toString

@@ -1,17 +1,13 @@
 package japgolly.scalajs.benchmark.vendor
 
-import scala.annotation.nowarn
 import scala.scalajs.js
-import scala.scalajs.js.annotation._
 
-@JSGlobal("jStat")
-@js.native
-@nowarn("cat=unused")
 object JStat extends js.Object {
 
-  @js.native
+  private[this] val jstat = js.Dynamic.global.require("jstat")
+
   object studentt extends js.Object {
-    def inv(p: Double, df: Int): Double = js.native
+    def inv(p: Double, df: Int): Double = jstat.studentt.inv(p, df).asInstanceOf[Double]
   }
 
 }

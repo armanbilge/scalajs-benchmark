@@ -1,10 +1,6 @@
 package japgolly.scalajs.benchmark.engine
 
-import japgolly.scalajs.benchmark.vendor.chartjs.Chart
-import japgolly.scalajs.react.Reusability
-import japgolly.scalajs.react.Reusability.TemporalImplicitsWithoutTolerance._
 import java.util.concurrent.TimeUnit
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 /**
@@ -46,18 +42,10 @@ object EngineOptions {
 
   // Ensure benchmarks don't start before chart animation finishes
   private def defaultDelay: () => FiniteDuration = () => {
-    val chartTimeSec = Chart.defaults.global.animationSteps / 60.0
-    val delaySec     = chartTimeSec * 1.4 // some buffer
-    val delayMicro   = delaySec * 1000000.0
-    delayMicro.toInt.micros
+    FiniteDuration(0, TimeUnit.MILLISECONDS)
   }
 
   private val estimatedOverheadPerBm =
     FiniteDuration(2000, TimeUnit.MILLISECONDS)
 
-  implicit val reusability: Reusability[EngineOptions] = {
-    @nowarn("cat=unused") implicit val x1 = Reusability.byRef[Clock]
-    @nowarn("cat=unused") implicit val x2 = Reusability.byRef[() => FiniteDuration]
-    Reusability.derive
-  }
 }

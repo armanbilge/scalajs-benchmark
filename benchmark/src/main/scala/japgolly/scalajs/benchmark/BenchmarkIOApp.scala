@@ -4,7 +4,6 @@ import cats.effect.IOApp
 import cats.effect.{ExitCode, IO}
 import japgolly.scalajs.benchmark.engine.Engine
 import japgolly.scalajs.benchmark.engine.EngineOptions
-import japgolly.scalajs.benchmark.Plan
 import japgolly.scalajs.benchmark.engine._
 import japgolly.scalajs.benchmark.gui.BmResultFormat
 

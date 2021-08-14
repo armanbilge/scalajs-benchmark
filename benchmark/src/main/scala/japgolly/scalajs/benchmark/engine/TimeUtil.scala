@@ -1,7 +1,6 @@
 package japgolly.scalajs.benchmark.engine
 
 import java.util.concurrent.TimeUnit
-import monocle.Iso
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.scalajs.js
 
@@ -25,9 +24,6 @@ object TimeUtil {
       Duration.Undefined
     else
       FiniteDuration((ms * 1000000.0).toLong, TimeUnit.NANOSECONDS)
-
-  val ms: Iso[Duration, Double] =
-    Iso(toMs)(fromMs)
 
   private final val msFromSec: Double = 1000
   private final val msFromMin: Double = msFromSec * 60

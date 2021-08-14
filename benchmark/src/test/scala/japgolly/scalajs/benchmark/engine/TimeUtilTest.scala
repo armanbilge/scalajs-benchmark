@@ -1,18 +1,17 @@
 package japgolly.scalajs.benchmark.engine
 
-import japgolly.microlibs.testutil.TestUtil._
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.{FiniteDuration, TimeUnit}
-import sourcecode.Line
 import utest._
+import japgolly.scalajs.benchmark.TestUtil
 
 object TimeUtilTest extends TestSuite {
 
   override def tests = Tests {
     "getUnitsFromMs" - {
-      def test(t: TimeUnit)(implicit l: Line): Unit = {
+      def test(t: TimeUnit): Unit = {
         val oneAsMs = TimeUtil.toMs(FiniteDuration(1, t))
-        assertEq(TimeUtil.getUnitsFromMs(t)(oneAsMs), 1d)
+        TestUtil.assertEq(TimeUtil.getUnitsFromMs(t)(oneAsMs), 1d)
       }
 
       "NANOSECONDS"  - test(TimeUnit.NANOSECONDS)

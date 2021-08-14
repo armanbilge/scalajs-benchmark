@@ -1,7 +1,5 @@
 package japgolly.scalajs.benchmark
 
-import monocle.Lens
-
 /**
   * A suite of benchmarks.
   *
@@ -21,8 +19,6 @@ object Suite {
   def apply[P](name: String)(bms: Benchmark[P]*): Suite[P] =
     Suite(name, bms.toVector.sortBy(_.name))
 
-  def bms[P]: Lens[Suite[P], Vector[Benchmark[P]]] =
-    Lens((_: Suite[P]).bms)(b => s => Suite(s.name, b))
 }
 
 final case class Plan[P](suite: Suite[P], params: Vector[P]) {

@@ -4,12 +4,13 @@ import com.jsuereth.sbtpgp.PgpKeys
 import org.scalajs.jsdependencies.sbtplugin.JSDependenciesPlugin
 import org.scalajs.jsdependencies.sbtplugin.JSDependenciesPlugin.autoImport._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
-import org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import xerial.sbt.Sonatype.autoImport._
 import Dependencies._
 import Lib._
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
 object ScalaJsBenchmark {
 
@@ -83,9 +84,7 @@ object ScalaJsBenchmark {
 
   def utestSettings: PE =
     _.settings(
-      jsEnv               := new JSDOMNodeJSEnv,
       libraryDependencies += Dep.utest.value % Test,
-      libraryDependencies += Dep.microlibsTestUtil.value % Test,
       testFrameworks      := new TestFramework("utest.runner.Framework") :: Nil)
 
   lazy val genBoilerplate = TaskKey[Unit]("genBoilerplate")
@@ -99,7 +98,7 @@ object ScalaJsBenchmark {
 
   lazy val benchmark =
     Project("benchmark", file("benchmark"))
-      .enablePlugins(ScalaJSPlugin, JSDependenciesPlugin)
+      .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin, JSDependenciesPlugin)
       .configure(commonSettings, publicationSettings(ghProject), utestSettings)
       .settings(
         libraryDependencies ++= Seq(
@@ -108,15 +107,6 @@ object ScalaJsBenchmark {
           Dep.circe              .value,
           Dep.circeGeneric       .value,
           Dep.circeParser        .value % Test,
-          Dep.microlibsStdlibExt .value,
-          Dep.microlibsUtils     .value,
-          Dep.monocle            .value,
-          Dep.monocleMacro       .value,
-          Dep.scalaCss           .value,
-          Dep.scalaCssReact      .value,
-          Dep.scalaJsReactCore   .value,
-          Dep.scalaJsReactExtra  .value,
-          Dep.scalaJsReactMonocle.value,
           Dep.sourceCode         .value,
         ),
 
@@ -125,14 +115,7 @@ object ScalaJsBenchmark {
           case _             => Nil
         }.value.map(sourceDirectory.value / _),
 
-        jsDependencies ++= Seq(
-          Dep.chartJs,
-          Dep.fileSaver,
-          Dep.jstat,
-          Dep.jsZip,
-          Dep.react,
-          Dep.reactDom,
-        ),
+        Compile / npmDependencies += "jstat" -> "1.9.5",
 
         genBoilerplate := GenBoilerplate(sourceDirectory.value / "main" / "scala")
       )
