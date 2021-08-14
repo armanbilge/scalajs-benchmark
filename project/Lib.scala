@@ -24,23 +24,6 @@ object Lib {
     _.settings(s: _*)
   }
 
-  def publicationSettings(ghProject: String): PE =
-    sourceMapsToGithub(ghProject).andThen(
-    _.settings(
-      publishTo := sonatypePublishToBundle.value,
-      pomExtra :=
-        <scm>
-          <connection>scm:git:github.com/japgolly/{ghProject}</connection>
-          <developerConnection>scm:git:git@github.com:japgolly/{ghProject}.git</developerConnection>
-          <url>github.com:japgolly/{ghProject}.git</url>
-        </scm>
-        <developers>
-          <developer>
-            <id>japgolly</id>
-            <name>David Barri</name>
-          </developer>
-        </developers>))
-
   def sourceMapsToGithub(ghProject: String): Project => Project =
     p => p.settings(
       scalacOptions ++= {

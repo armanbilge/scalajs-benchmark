@@ -11,6 +11,7 @@ import Dependencies._
 import Lib._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
+import sbtdynver.DynVerPlugin.autoImport._
 
 object ScalaJsBenchmark {
 
@@ -69,6 +70,7 @@ object ScalaJsBenchmark {
       homepage                      := Some(url("https://github.com/armanbilge/" + ghProject)),
       licenses                      += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       sonatypeCredentialHost := "s01.oss.sonatype.org",
+      dynverSonatypeSnapshots := true,
       scalaVersion                  := Ver.scala2,
       crossScalaVersions            := Seq(Ver.scala2, "2.12.14", Ver.scala3),
       scalacOptions                ++= scalacCommonFlags,
@@ -99,8 +101,10 @@ object ScalaJsBenchmark {
   lazy val benchmark =
     Project("benchmark", file("benchmark"))
       .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin, JSDependenciesPlugin)
-      .configure(commonSettings, publicationSettings(ghProject), utestSettings)
+      .configure(commonSettings, utestSettings)
       .settings(
+        name := "scalajs-benchmark",
+
         libraryDependencies ++= Seq(
           Dep.cats               .value,
           Dep.catsEffect         .value,
