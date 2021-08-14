@@ -1,14 +1,9 @@
 package demo
 
-import cats.effect.{ExitCode, IO, IOApp}
-import demo.suites.scala.IntSet
 import japgolly.scalajs.benchmark.Plan
-import japgolly.scalajs.benchmark.engine.Engine
-import demo.suites.scalajs.Allocation
+import demo.suites.scala.IntSet
+import japgolly.scalajs.benchmark.BenchmarkIOApp
 
-object Main extends IOApp {
-
-  override def run(args: List[String]): IO[ExitCode] =
-    Engine.runToConsole(Plan(Allocation.suite, Vector(Allocation.Config(1000)))).as(ExitCode.Success)
-
+object Main extends BenchmarkIOApp[Int] {
+  override def plan = Plan(IntSet.suite, Vector(10000))
 }
