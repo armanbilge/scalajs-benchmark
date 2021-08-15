@@ -100,7 +100,7 @@ object ScalaJsBenchmark {
 
   lazy val benchmark =
     Project("benchmark", file("benchmark"))
-      .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin, JSDependenciesPlugin)
+      .enablePlugins(ScalaJSPlugin)
       .configure(commonSettings, utestSettings)
       .settings(
         name := "scalajs-benchmark",
@@ -118,8 +118,6 @@ object ScalaJsBenchmark {
           case (2, 13, 1, _) => "main/scala-2.13.1" :: Nil
           case _             => Nil
         }.value.map(sourceDirectory.value / _),
-
-        Compile / npmDependencies += "jstat" -> "1.9.5",
 
         genBoilerplate := GenBoilerplate(sourceDirectory.value / "main" / "scala")
       )
