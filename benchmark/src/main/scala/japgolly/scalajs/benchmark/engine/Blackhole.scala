@@ -1,8 +1,11 @@
 package japgolly.scalajs.benchmark.engine
 
+import scala.scalajs.js
+
 class Blackhole {
   var x = false
   var ar: AnyRef = ""
+  var consumedCPU: js.BigInt = js.BigInt(System.nanoTime().toString)
 
   final def consume(obj: AnyRef): Unit =
     x ^= obj eq ar
@@ -36,4 +39,18 @@ class Blackhole {
 
   final def consumeA[A](a: A): Unit =
     consume(a :: Nil)
+
+  final def consumeCPU(tokens: Int): Unit = {
+    var t = consumedCPU
+
+    var i = tokens
+    while (i > 0) {
+      t += (t * js.BigInt(0x5deece66dL.toString) + js.BigInt(0xbL.toString) + js
+        .BigInt(i)) & js.BigInt(0xffffffffffffL.toString)
+      i -= 1
+    }
+
+    if (t == js.BigInt(42))
+      consumedCPU += t
+  }
 }
