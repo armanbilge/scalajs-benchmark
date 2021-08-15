@@ -9,8 +9,6 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import xerial.sbt.Sonatype.autoImport._
 import Dependencies._
 import Lib._
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import sbtdynver.DynVerPlugin.autoImport._
 
 object ScalaJsBenchmark {
