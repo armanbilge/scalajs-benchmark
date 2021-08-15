@@ -32,9 +32,11 @@ abstract class BenchmarkIOApp extends IOApp {
             val score = bmFormat.score.toTextPretty(stats)
             val error = bmFormat.scoreError.toTextPretty(stats)
             val result = s"${score} ± ${error} ${bmFormat.header}"
-            IO.println(fmt.format(p.runs, p.total, k.bm.name, k.param, result))
+            IO.println(
+              fmt.format(p.runs + 1, p.total, k.bm.name, k.param, result)
+            )
           case BenchmarkFinished(p, k, Left(ex)) =>
-            IO.println(fmt.format(p.runs, p.total, k.bm.name, k.param, ex))
+            IO.println(fmt.format(p.runs + 1, p.total, k.bm.name, k.param, ex))
           case SuiteFinished(p) => IO.println("Suite completed: " + p.plan.name)
         }
     }
